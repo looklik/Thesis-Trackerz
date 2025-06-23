@@ -1,0 +1,315 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  name String
+  email String [unique, not null]
+  emailVerified DateTime
+  image String
+  password String
+  studentId String [unique]
+  department String
+  phoneNumber String
+  role String [not null, default: 'student']
+  workplace String
+  academicPosition String
+  shortPosition String
+  expertise String[] [not null]
+  educationHistory String[] [not null]
+  accounts Account [not null]
+  theses Thesis [not null]
+  advisingTheses Thesis [not null]
+  coAdvisingTheses Thesis [not null]
+  tasks Task [not null]
+  sentMessages Message [not null]
+  receivedMessages Message [not null]
+  notifications Notification [not null]
+  createdEvents Event [not null]
+  participatedEvents EventParticipant [not null]
+  documentComments DocumentComment [not null]
+  commentReplies CommentReply [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  resetPasswordToken String
+  resetPasswordExpire DateTime
+  lastLogin DateTime
+  status String [default: 'active']
+}
+
+Table Account {
+  id String [pk]
+  userId String [not null]
+  type String [not null]
+  provider String [not null]
+  providerAccountId String [not null]
+  refresh_token String
+  access_token String
+  expires_at Int
+  token_type String
+  scope String
+  id_token String
+  session_state String
+  user User [not null]
+
+  indexes {
+    (provider, providerAccountId) [unique]
+  }
+}
+
+Table Thesis {
+  id String [pk]
+  title String [not null]
+  description String [not null]
+  type String [not null]
+  field String [not null]
+  studentId String [not null]
+  student User [not null]
+  advisorId String
+  advisor User
+  coAdvisorId String
+  coAdvisor User
+  mainAdvisorConfirmed Boolean [not null, default: false]
+  coAdvisorConfirmed Boolean [not null, default: false]
+  status String [not null, default: 'pending_advisor_confirmation']
+  documents Document [not null]
+  milestones Milestone [not null]
+  tasks Task [not null]
+  messages Message [not null]
+  notifications Notification [not null]
+  conversations Conversation [not null]
+  events Event [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Document {
+  id String [pk]
+  name String [not null]
+  fileUrl String [not null]
+  fileType String [not null]
+  size Int [not null, default: 0]
+  thesisId String [not null]
+  thesis Thesis [not null]
+  uploadedBy String
+  uploadedAt DateTime [default: `now()`, not null]
+  description String
+  version Int [not null, default: 1]
+  messageId String
+  message Message
+  comments DocumentComment [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table DocumentComment {
+  id String [pk]
+  content String [not null]
+  documentId String [not null]
+  document Document [not null]
+  userId String [not null]
+  user User [not null]
+  pageNumber Int [not null, default: 1]
+  highlightedText String
+  position String
+  edited Boolean [not null, default: false]
+  replies CommentReply [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table CommentReply {
+  id String [pk]
+  content String [not null]
+  commentId String [not null]
+  comment DocumentComment [not null]
+  userId String [not null]
+  user User [not null]
+  edited Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Milestone {
+  id String [pk]
+  title String [not null]
+  description String
+  dueDate DateTime [not null]
+  completed Boolean [not null, default: false]
+  thesisId String [not null]
+  thesis Thesis [not null]
+  event Event
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Conversation {
+  id String [pk]
+  name String
+  isGroup Boolean [not null, default: false]
+  thesisId String [not null]
+  thesis Thesis [not null]
+  messages Message [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Message {
+  id String [pk]
+  content String [not null]
+  senderId String [not null]
+  sender User [not null]
+  receiverId String [not null]
+  receiver User [not null]
+  thesisId String [not null]
+  thesis Thesis [not null]
+  conversationId String
+  conversation Conversation
+  read Boolean [not null, default: false]
+  readAt DateTime
+  attachments Document [not null]
+  isSystemMessage Boolean [not null, default: false]
+  parentId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Notification {
+  id String [pk]
+  title String [not null]
+  message String [not null]
+  type String [not null]
+  read Boolean [not null, default: false]
+  userId String [not null]
+  user User [not null]
+  thesisId String
+  thesis Thesis
+  link String
+  createdAt DateTime [default: `now()`, not null]
+  expiresAt DateTime
+}
+
+Table Event {
+  id String [pk]
+  title String [not null]
+  description String
+  location String
+  startTime DateTime [not null]
+  endTime DateTime [not null]
+  allDay Boolean [not null, default: false]
+  type String [not null]
+  status String [not null, default: 'scheduled']
+  color String
+  isRecurring Boolean [not null, default: false]
+  recurrenceRule String
+  creatorId String [not null]
+  creator User [not null]
+  participants EventParticipant [not null]
+  thesisId String
+  thesis Thesis
+  milestoneId String [unique]
+  milestone Milestone
+  reminderSent Boolean [not null, default: false]
+  reminderTime DateTime
+  externalEventId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table EventParticipant {
+  id String [pk]
+  eventId String [not null]
+  event Event [not null]
+  userId String [not null]
+  user User [not null]
+  status String [not null, default: 'pending']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (eventId, userId) [unique]
+  }
+}
+
+Table verificationToken {
+  id String [pk]
+  email String [unique, not null]
+  token String [not null]
+  expires DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table emailVerification {
+  id String [pk]
+  email String [unique, not null]
+  verified Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Task {
+  id String [pk]
+  title String [not null]
+  description String
+  dueDate DateTime [not null]
+  completed Boolean [not null, default: false]
+  priority String [not null]
+  category String [not null]
+  studentId String [not null]
+  student User [not null]
+  thesisId String
+  thesis Thesis
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Ref: Account.userId > User.id [delete: Cascade]
+
+Ref: Thesis.studentId > User.id
+
+Ref: Thesis.advisorId > User.id
+
+Ref: Thesis.coAdvisorId > User.id
+
+Ref: Document.thesisId > Thesis.id [delete: Cascade]
+
+Ref: Document.messageId > Message.id [delete: Set Null]
+
+Ref: DocumentComment.documentId > Document.id [delete: Cascade]
+
+Ref: DocumentComment.userId > User.id
+
+Ref: CommentReply.commentId > DocumentComment.id [delete: Cascade]
+
+Ref: CommentReply.userId > User.id
+
+Ref: Milestone.thesisId > Thesis.id [delete: Cascade]
+
+Ref: Conversation.thesisId > Thesis.id [delete: Cascade]
+
+Ref: Message.senderId > User.id
+
+Ref: Message.receiverId > User.id
+
+Ref: Message.thesisId > Thesis.id [delete: Cascade]
+
+Ref: Message.conversationId > Conversation.id [delete: Cascade]
+
+Ref: Notification.userId > User.id [delete: Cascade]
+
+Ref: Notification.thesisId > Thesis.id [delete: Set Null]
+
+Ref: Event.creatorId > User.id
+
+Ref: Event.thesisId > Thesis.id [delete: Set Null]
+
+Ref: Event.milestoneId - Milestone.id [delete: Set Null]
+
+Ref: EventParticipant.eventId > Event.id [delete: Cascade]
+
+Ref: EventParticipant.userId > User.id [delete: Cascade]
+
+Ref: Task.studentId > User.id [delete: Cascade]
+
+Ref: Task.thesisId > Thesis.id [delete: Set Null]

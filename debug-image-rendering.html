@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Rendering Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-case {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-case h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        img {
+            margin: 10px;
+            border: 1px solid #ccc;
+        }
+        .dark-bg {
+            background: #1a1a1a;
+            color: white;
+        }
+        .dark-bg img {
+            border: 1px solid #555;
+        }
+        .message-style {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .message-dark {
+            background: #374151;
+            color: white;
+        }
+        .debug-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Image Rendering Debug Test</h1>
+        
+        <div class="test-case">
+            <h3>Test 1: SVG Image - Default Style</h3>
+            <div class="debug-info">
+                File: sample-image.svg<br>
+                Type: image/svg+xml<br>
+                Size: 840 bytes
+            </div>
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgICAgPGRlZnM+CiAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjpyZ2IoMjU1LDAsMTUwKTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6cmdiKDAsMTUwLDI1NSk7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNncmFkMSkiIC8+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDwn5O3IOC4leC4seC4p+C4reC4ouC5iOC4suC4h+C4o+C4ueC4m+C4oOC4suC4ngogICAgICA8L3RleHQ+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDguKrguYnguIfguIjguLLguIHguKPguLDguJrguJrguILguYnguK3guITguKfguLLguKEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+" 
+                 alt="SVG Test" 
+                 style="max-width: 300px; max-height: 200px;">
+        </div>
+        
+        <div class="test-case">
+            <h3>Test 2: SVG Image - With White Background</h3>
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgICAgPGRlZnM+CiAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjpyZ2IoMjU1LDAsMTUwKTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6cmdiKDAsMTUwLDI1NSk7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNncmFkMSkiIC8+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDwn5O3IOC4leC4seC4p+C4reC4ouC5iOC4suC4h+C4o+C4ueC4m+C4oOC4suC4ngogICAgICA8L3RleHQ+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDguKrguYnguIfguIjguLLguIHguKPguLDguJrguJrguILguYnguK3guITguKfguLLguKEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+" 
+                 alt="SVG Test" 
+                 style="max-width: 300px; max-height: 200px; background-color: white; padding: 10px;">
+        </div>
+        
+        <div class="test-case">
+            <h3>Test 3: Simulated Message Container (Light)</h3>
+            <div class="message-style">
+                <p>📷 ส่งรูปภาพ</p>
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgICAgPGRlZnM+CiAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjpyZ2IoMjU1LDAsMTUwKTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6cmdiKDAsMTUwLDI1NSk7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNncmFkMSkiIC8+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDwn5O3IOC4leC4seC4p+C4reC4ouC5iOC4suC4h+C4o+C4ueC4m+C4oOC4suC4ngogICAgICA8L3RleHQ+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDguKrguYnguIfguIjguLLguIHguKPguLDguJrguJrguILguYnguK3guITguKfguLLguKEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+" 
+                     alt="SVG Test" 
+                     style="max-width: 300px; max-height: 200px; object-fit: contain; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 4px;">
+                <div style="font-size: 12px; color: #666; margin-top: 5px;">sample-image.svg (1KB)</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container dark-bg">
+        <h2>🌙 Dark Background Tests</h2>
+        
+        <div class="test-case">
+            <h3>Test 4: Dark Background - Same Image</h3>
+            <div class="message-style message-dark">
+                <p>📷 ส่งรูปภาพ</p>
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgICAgPGRlZnM+CiAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjpyZ2IoMjU1LDAsMTUwKTtzdG9wLW9wYWNpdHk6MSIgLz4KICAgICAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6cmdiKDAsMTUwLDI1NSk7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgICAgPC9kZWZzPgogICAgICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNncmFkMSkiIC8+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDwn5O3IOC4leC4seC4p+C4reC4ouC5iOC4suC4h+C4o+C4ueC4m+C4oOC4suC4ngogICAgICA8L3RleHQ+CiAgICAgIDx0ZXh0IHg9IjEwMCIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj4KICAgICAgICDguKrguYnguIfguIjguLLguIHguKPguLDguJrguJrguILguYnguK3guITguKfguLLguKEKICAgICAgPC90ZXh0PgogICAgPC9zdmc+" 
+                     alt="SVG Test" 
+                     style="max-width: 300px; max-height: 200px; object-fit: contain; background-color: #ffffff; border: 1px solid #555; border-radius: 4px;">
+                <div style="font-size: 12px; color: #ccc; margin-top: 5px;">sample-image.svg (1KB)</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Debug script to check image loading
+        document.querySelectorAll('img').forEach((img, index) => {
+            img.onload = function() {
+                console.log(`Image ${index + 1} loaded successfully:`, {
+                    src: this.src.substring(0, 50) + '...',
+                    naturalWidth: this.naturalWidth,
+                    naturalHeight: this.naturalHeight,
+                    alt: this.alt
+                });
+            };
+            
+            img.onerror = function() {
+                console.error(`Image ${index + 1} failed to load:`, {
+                    src: this.src.substring(0, 50) + '...',
+                    alt: this.alt
+                });
+                this.style.border = '2px solid red';
+                this.alt = 'Failed: ' + this.alt;
+            };
+        });
+    </script>
+</body>
+</html> 

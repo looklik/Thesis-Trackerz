@@ -1,0 +1,239 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Configure seeding
+// generator dbml {
+//   provider = "prisma-dbml-generator"
+//   output   = "./dbml"
+// }
+
+model User {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  name                String?
+  email               String    @unique
+  emailVerified       DateTime?
+  image               String?
+  password            String?
+  studentId           String?   @unique
+  department          String?
+  phoneNumber         String?
+  role                String    @default("student")
+  workplace           String? // สถานที่ทำงาน (อาคาร ชั้น ห้อง)
+  academicPosition    String? // ตำแหน่งทางวิชาการ (ศ., รศ., ผศ., อ.)
+  shortPosition       String? // ตำแหน่งย่อ (หัวหน้าภาควิชา, ประธานหลักสูตร)
+  expertise           String[] // วิชาที่เชี่ยวชาญ
+  educationHistory    String[] // ประวัติการศึกษา (ปริญญาเอก, ปริญญาโท, ปริญญาตรี)
+  notificationSettings Json?   // การตั้งค่าการแจ้งเตือน
+  accounts            Account[]
+  theses              Thesis[]  @relation("StudentTheses")
+  advisingTheses      Thesis[]  @relation("AdvisorTheses")
+  coAdvisingTheses    Thesis[]  @relation("CoAdvisorTheses")
+  tasks               Task[]    @relation("StudentTasks")
+  sentMessages        Message[] @relation("SentMessages")
+  receivedMessages    Message[] @relation("ReceivedMessages")
+  notifications       Notification[] @relation("UserNotifications")
+  documentComments    DocumentComment[] @relation("UserDocumentComments")
+  commentReplies      CommentReply[] @relation("UserCommentReplies")
+  createdCalendarEvents CalendarEvent[] @relation("CalendarEventCreator")
+  studentCalendarEvents CalendarEvent[] @relation("CalendarEventStudent")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  resetPasswordToken  String?
+  resetPasswordExpire DateTime?
+  lastLogin           DateTime?
+  status              String?   @default("active")
+  uploadedDocuments   Document[]  @relation("UserUploadedDocuments")
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Thesis {
+  id                   String      @id @default(auto()) @map("_id") @db.ObjectId
+  title                String
+  description          String
+  type                 String // thesis, project, research
+  field                String
+  studentId            String      @db.ObjectId
+  student              User        @relation("StudentTheses", fields: [studentId], references: [id])
+  advisorId            String?     @db.ObjectId
+  advisor              User?       @relation("AdvisorTheses", fields: [advisorId], references: [id])
+  coAdvisorId          String?     @db.ObjectId
+  coAdvisor            User?       @relation("CoAdvisorTheses", fields: [coAdvisorId], references: [id])
+  mainAdvisorConfirmed Boolean     @default(false)
+  coAdvisorConfirmed   Boolean     @default(false)
+  progress             Int         @default(0) // ความคืบหน้าเป็นเปอร์เซ็นต์ (0-100) ที่อาจารย์ที่ปรึกษาหลักกำหนด
+  status               String      @default("pending_advisor_confirmation") // pending_advisor_confirmation, draft, in_progress, submitted, approved, rejected
+  documents            Document[]
+  tasks                Task[]      @relation("ThesisTasks")
+  messages             Message[]
+  notifications        Notification[]
+  conversations        Conversation[]
+  calendarEvents       CalendarEvent[] @relation("CalendarEventThesis")
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+}
+
+model Document {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  fileUrl     String
+  fileType    String
+  size        Int       @default(0) // ขนาดไฟล์ในหน่วย bytes
+  fileContent String?   // เก็บเนื้อหาไฟล์เป็น base64
+  thesisId    String    @db.ObjectId
+  thesis      Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  uploadedBy  String?   @db.ObjectId // ID ของผู้อัปโหลด
+  uploadedByUser User?  @relation("UserUploadedDocuments", fields: [uploadedBy], references: [id], onDelete: SetNull)
+  uploadedAt  DateTime  @default(now())
+  description String?   // คำอธิบายเกี่ยวกับเอกสาร
+  version     Int       @default(1) // เวอร์ชันของเอกสาร
+  status      String    @default("pending") // pending, approved, rejected, revision_needed
+  messageId   String?   @db.ObjectId // อ้างอิงถึงข้อความที่มีการแนบไฟล์นี้
+  message     Message?  @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  comments    DocumentComment[] // ความคิดเห็นในเอกสาร
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model DocumentComment {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  content         String
+  documentId      String    @db.ObjectId
+  document        Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId          String    @db.ObjectId
+  user            User      @relation("UserDocumentComments", fields: [userId], references: [id])
+  pageNumber      Int       @default(1) // หน้าที่แสดงความคิดเห็น
+  highlightedText String?   // ข้อความที่ถูกไฮไลต์
+  position        String?   // ตำแหน่งของความคิดเห็นในหน้าเอกสาร (JSON string)
+  edited          Boolean   @default(false) // บอกว่ามีการแก้ไขหรือไม่
+  replies         CommentReply[] // การตอบกลับความคิดเห็น
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model CommentReply {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  commentId   String   @db.ObjectId
+  comment     DocumentComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId      String   @db.ObjectId
+  user        User     @relation("UserCommentReplies", fields: [userId], references: [id])
+  edited      Boolean  @default(false) // บอกว่ามีการแก้ไขหรือไม่
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Conversation {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?   // ชื่อการสนทนา (ถ้าเป็นกลุ่ม)
+  isGroup   Boolean   @default(false)
+  thesisId  String    @db.ObjectId
+  thesis    Thesis    @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  content        String
+  senderId       String       @db.ObjectId
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId     String       @db.ObjectId
+  receiver       User         @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  thesisId       String       @db.ObjectId
+  thesis         Thesis       @relation(fields: [thesisId], references: [id], onDelete: Cascade)
+  conversationId String?      @db.ObjectId
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  read           Boolean      @default(false)
+  readAt         DateTime?
+  attachments    Document[]
+  isSystemMessage Boolean     @default(false) // ข้อความระบบ (เช่น การแจ้งเตือนภายใน)
+  parentId       String?      @db.ObjectId // สำหรับการตอบกลับข้อความ
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Notification {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  message     String
+  type        String    // info, warning, success, error
+  read        Boolean   @default(false)
+  userId      String    @db.ObjectId
+  user        User      @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  thesisId    String?   @db.ObjectId
+  thesis      Thesis?   @relation(fields: [thesisId], references: [id], onDelete: SetNull)
+  link        String?   // Optional link to redirect when clicking the notification
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime? // Optional expiration date for temporary notifications
+}
+
+model Task {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  dueDate     DateTime
+  completed   Boolean  @default(false)
+  priority    String   // high, medium, low
+  category    String   // submission, documentation, meeting, general, research, planning
+  studentId   String   @db.ObjectId
+  student     User     @relation("StudentTasks", fields: [studentId], references: [id], onDelete: Cascade)
+  thesisId    String?  @db.ObjectId
+  thesis      Thesis?  @relation("ThesisTasks", fields: [thesisId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CalendarEvent {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String   // ชื่อกิจกรรม
+  description String?  // รายละเอียด
+  date        String   // วันที่ (YYYY-MM-DD format)
+  time        String   // เวลา (HH:MM format)
+  type        String   // meeting, milestone, presentation, deadline, other
+  
+  // ความสัมพันธ์กับผู้ใช้
+  createdBy   String   @db.ObjectId // ครูผู้สร้าง
+  creator     User     @relation("CalendarEventCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  
+  // ความสัมพันธ์กับนักศึกษา (ไม่บังคับ)
+  studentId   String?  @db.ObjectId
+  student     User?    @relation("CalendarEventStudent", fields: [studentId], references: [id], onDelete: SetNull)
+  
+  // ความสัมพันธ์กับวิทยานิพนธ์ (ไม่บังคับ)
+  thesisId    String?  @db.ObjectId
+  thesis      Thesis?  @relation("CalendarEventThesis", fields: [thesisId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
